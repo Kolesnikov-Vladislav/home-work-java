@@ -38,8 +38,8 @@ public class HomeWork {
         //добиться переполнения при вычисления
          byte a = 10;
          byte b = 20;
-         //byte s = a * b; //Результат ошибка: possible lossy conversion from int to byte.
-         //System.out.print("Result overflow " + s);
+         byte s = a * b; //Результат ошибка: possible lossy conversion from int to byte.
+         System.out.print("Result overflow " + s);
 
         //Комбинация разных типов данных. Выше приведены уже string + integer. Здесь будет комбинация integer and double.
         double d = 1.5;
