@@ -1,10 +1,11 @@
 import com.codeborne.pdftest.PDF;
 import com.codeborne.xlstest.XLS;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.opencsv.CSVReader;
 import com.google.common.io.Files;
+import data.DataForJson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 
-public class checkFilesTests extends Exception{
+public class CheckFilesTests extends Exception{
     @Test
     void watchFileTypeZip() throws Exception{
 
@@ -31,7 +32,7 @@ public class checkFilesTests extends Exception{
                                         && fillingZip.contains("bonjur.pdf"));
         }
     }
-    private final ClassLoader cl = checkFilesTests.class.getClassLoader();
+    private final ClassLoader cl = CheckFilesTests.class.getClassLoader();
     @Test
     void checkFillingAllFiles() throws Exception{
         try (InputStream is = cl.getResourceAsStream("AllFiles.zip");
@@ -62,11 +63,22 @@ public class checkFilesTests extends Exception{
 
     @Test
     void checkJsonStructure()  throws Exception {
-        Gson body = new Gson();
+        ObjectMapper mapper = new ObjectMapper();
         try (InputStream is = cl.getResourceAsStream("JSONFile.json");
              InputStreamReader isr = new InputStreamReader(is)) {
-            JsonObject jsonObject = body.fromJson(isr, JsonObject.class);
-            Assertions.assertEquals("Иванов Иван", jsonObject.get("fio").getAsString());
+            DataForJson dataForJson = mapper.readValue(isr, DataForJson.class);
+            Assertions.assertEquals("Иванов Иван", dataForJson.fio, "ERROR FIO CLIENT");
+            Assertions.assertEquals(1, dataForJson.gender, "ERROR MALE CLIENT");
+            Assertions.assertEquals("123124125126", dataForJson.inn, "ERROR INN CLIENT");
+            Assertions.assertEquals("1970-01-01T00:00:00.0000000+00:00", dataForJson.birthDate, "ERROR BIRTHDATE CLIENT");
+            Assertions.assertEquals("88005553535", dataForJson.mainPhone, "ERROR MAINPHONE CLIENT");
+            Assertions.assertEquals(null, dataForJson.additionalPhone, "ERROR ADDITIONALPHONE CLIENT");
+            Assertions.assertEquals("ivanov@example.com", dataForJson.email, "ERROR EMAIL CLIENT");
+            Assertions.assertEquals("Оставляет чаевые", dataForJson.comment, "ERROR COMMENT CLIENT");
+            Assertions.assertEquals("4608999777", dataForJson.passport, "ERROR PASSPORT CLIENT");
+            Assertions.assertEquals(null, dataForJson.docType, "ERROR DOCTYPE CLIENT");
+            Assertions.assertEquals(null, dataForJson.nationality, "ERROR NATYONALITY CLIENT");
+            Assertions.assertEquals(null, dataForJson.address, "ERROR ADRESS CLIENT");
         }
     }
 }
